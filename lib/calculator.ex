@@ -1,14 +1,10 @@
 defmodule Calculator do
   @moduledoc """
-  Documentation for Calculator.
+  A Calculator that can do mathematical differentiation of polynomials.
   """
 
   @doc """
   Input: /differentiate/3/2/1 would represent -> 3x^2 + 2x + 1
-
-  {-1, [{0, -1}, {2, 0}, {6, 1}]}
-
-  6x+2
 
   Output would be: 6x+2
 
@@ -27,6 +23,15 @@ defmodule Calculator do
       iex> Calculator.calculate([3,2,1])
       [6, 2]
 
+      iex> Calculator.calculate([4,3,2,1])
+      [12, 6, 2]
+
+      iex> Calculator.calculate([4,3,0,1])
+      [12, 6]
+
+      iex> Calculator.calculate([4,5,0,1])
+      [12, 10]
+
   """
   def calculate(list) do
     b = Enum.count(list) -1
@@ -34,18 +39,11 @@ defmodule Calculator do
     {_, result} = Enum.reduce(list, {b, []}, fn num, {idx, acc} ->
       {idx-1, acc ++ [derivate(num, idx)]}
     end)
-    # {-1, [{6, 1}, {2, 0}, {0, -1}]}
 
-    Enum.map(result, fn {coefficient, power} ->
+    Enum.map(result, fn {coefficient, _power} ->
       coefficient
     end)
-    |> Enum.drop(-1)
-
-
-    # Enum.map(list, fn num -> derivate(num, b) end)
-    # |> IO.inspect
-
-    # Enum.map(&derivate/1)
+    |> Enum.filter(fn x -> x != 0 end)
   end
 
   defp derivate(a, b) do
